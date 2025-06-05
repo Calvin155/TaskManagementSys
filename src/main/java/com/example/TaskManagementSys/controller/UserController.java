@@ -19,5 +19,5 @@ public class UserController {
     }
 
     //LOGIN - Issue basic JWT
-    //LOG-OUT
+    //LOG-OUT//
 }
