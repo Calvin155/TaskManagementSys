@@ -1,5 +1,6 @@
 package com.example.TaskManagementSys.Service;
 
+import com.example.TaskManagementSys.Entity.Task;
 import com.example.TaskManagementSys.Entity.User;
 import com.example.TaskManagementSys.Respository.UserRepository;
 import org.springframework.security.core.GrantedAuthority;
@@ -11,6 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -37,6 +39,25 @@ public class UserService implements UserDetailsService {
             return user;
         }
         return null;
+    }
+
+    public Boolean checkUserNameExists(String userName){
+        User user = userRepository.findByUserName(userName);
+        if (user != null){
+            return true;
+        }
+        return false;
+    }
+
+    public void signUpNewUser(User user){
+        User newUser = new User();
+        newUser.setUserName(user.getUserName());
+        String password = psword.encode(user.getPassword());
+        newUser.setPassword(password);
+        newUser.setRoleType(user.getRoleType());
+        newUser.setTasks(new ArrayList<Task>());
+        System.out.println(newUser.getUserName());
+        userRepository.save(newUser);
     }
 
     @Override

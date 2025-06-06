@@ -32,7 +32,7 @@ public class WebSecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
                         //.requestMatchers("/v3/api-docs/**", "/swagger-ui/**" , "/swagger-ui.html", "/webjars/**" ).permitAll()
-                        .requestMatchers("/authenticate/login").permitAll()
+                        .requestMatchers("/authenticate/*").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(sessionManagement -> sessionManagement

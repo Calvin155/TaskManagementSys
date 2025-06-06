@@ -1,19 +1,19 @@
 package com.example.TaskManagementSys.Auth;
 
+import com.example.TaskManagementSys.Entity.RoleType;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
 public class SignUpRequest {
-    private String userName;
+    private String username;
     private String password;
-    private String role_type;
 
-    public SignUpRequest(String userName, String password){
-        this.userName = userName;
+    public SignUpRequest(String username, String password){
+        this.username = username;
         this.password = password;
-        this.role_type = "USER";
+
     }
 
 }
