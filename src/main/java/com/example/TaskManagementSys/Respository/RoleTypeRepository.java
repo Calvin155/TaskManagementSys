@@ -1,6 +1,6 @@
-package com.example.TaskManagementSys.respository;
+package com.example.TaskManagementSys.Respository;
 
-import com.example.TaskManagementSys.entity.RoleType;
+import com.example.TaskManagementSys.Entity.RoleType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

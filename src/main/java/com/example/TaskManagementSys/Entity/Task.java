@@ -1,4 +1,4 @@
-package com.example.TaskManagementSys.entity;
+package com.example.TaskManagementSys.Entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -15,7 +15,6 @@ import lombok.Setter;
 public class Task {
 
     // what does a task have
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
