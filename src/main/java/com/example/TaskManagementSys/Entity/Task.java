@@ -14,7 +14,6 @@ import lombok.Setter;
 @Table(name = "task")
 public class Task {
 
-    // what does a task have
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -40,6 +39,4 @@ public class Task {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-
-
 }

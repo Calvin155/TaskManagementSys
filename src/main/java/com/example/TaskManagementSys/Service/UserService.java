@@ -41,6 +41,15 @@ public class UserService implements UserDetailsService {
         return null;
     }
 
+    public User getUserByUserName(String userName){
+        User user = userRepository.findByUserName(userName);
+        if (user == null){
+            return null;
+        }
+
+        return user;
+    }
+
     public Boolean checkUserNameExists(String userName){
         User user = userRepository.findByUserName(userName);
         if (user != null){
