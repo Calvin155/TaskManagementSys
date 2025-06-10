@@ -3,6 +3,8 @@ package com.example.TaskManagementSys.Service;
 import com.example.TaskManagementSys.Entity.Task;
 import com.example.TaskManagementSys.Entity.User;
 import com.example.TaskManagementSys.Respository.UserRepository;
+import com.warrenstrange.googleauth.GoogleAuthenticator;
+import com.warrenstrange.googleauth.GoogleAuthenticatorKey;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,12 +16,14 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService implements UserDetailsService {
 
     private UserRepository userRepository;
     private static final PasswordEncoder psword = new BCryptPasswordEncoder();
+    private final GoogleAuthenticator gAuth = new GoogleAuthenticator();
 
     public UserService(UserRepository userRepository){
         this.userRepository = userRepository;
@@ -71,7 +75,7 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
-        User user = userRepository.findByUserName(userName); // assuming it returns User directly
+        User user = userRepository.findByUserName(userName);
         if (user == null) {
             throw new UsernameNotFoundException("User not found with username: " + userName);
         }
@@ -91,5 +95,22 @@ public class UserService implements UserDetailsService {
         );
     }
 
+    public String generateSecretKey(String userName) {
+        try {
+            GoogleAuthenticatorKey key = gAuth.createCredentials();
+            User user = userRepository.findByUserName(userName);
 
+            user.setSecretKey(key.getKey());
+            userRepository.save(user);
+
+            return key.getKey();
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
+
+    public String generateQrCodeUrl(String email, String secretKey) {
+        return "otpauth://totp/MyApp:" + email + "?secret=" + secretKey + "&issuer=MyApp";
+    }
 }
