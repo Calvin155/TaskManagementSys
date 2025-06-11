@@ -34,6 +34,9 @@ public class TaskController {
         if(user == null){
             return ResponseEntity.badRequest().build();
         }
+//        if(jwtUtil.validateToken(jwtToken, user.getUserName())){
+//            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+//        }
         List<TaskDTO> allTasks = taskService.getUserTasks(user);
         if(allTasks == null){
             return ResponseEntity.ok().body(null);
