@@ -31,8 +31,15 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
-      - name: Build with Maven
+      - name: Build with Maven (skip tests)
         run: mvn clean install -DskipTests
 
-      - name: Run tests
+      - name: Run tests with coverage
         run: mvn test
+
+      - name: Upload JaCoCo coverage report
+        if: success()
+        uses: actions/upload-artifact@v3
+        with:
+          name: jacoco-coverage-report
+          path: target/site/jacoco
