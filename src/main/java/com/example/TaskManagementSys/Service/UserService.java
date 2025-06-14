@@ -1,5 +1,6 @@
 package com.example.TaskManagementSys.Service;
 
+import com.example.TaskManagementSys.DTO.UserDTO;
 import com.example.TaskManagementSys.Entity.Task;
 import com.example.TaskManagementSys.Entity.User;
 import com.example.TaskManagementSys.Respository.UserRepository;
@@ -29,8 +30,22 @@ public class UserService implements UserDetailsService {
         this.userRepository = userRepository;
     }
 
-    public List<User> getAllUsers(){
-        return userRepository.findAll();
+    public List<UserDTO> getAllUsers(){
+        try {
+            List<User> userList = userRepository.findAll();
+            List<UserDTO> userDTOS = new ArrayList<>();
+            for (User user : userList) {
+                UserDTO userDTO = new UserDTO();
+                userDTO.setId(user.getId());
+                userDTO.setUserName(user.getUserName());
+                userDTO.setRoleType(user.getRoleType().getRoleTypeName());
+                userDTOS.add(userDTO);
+            }
+            return userDTOS;
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+            return null;
+        }
     }
 
     public User getUser(String userName, String password){
@@ -81,7 +96,7 @@ public class UserService implements UserDetailsService {
         }
 
         List<GrantedAuthority> authorities = List.of(
-                new SimpleGrantedAuthority("ROLE_" + user.getRoleType())
+                new SimpleGrantedAuthority("ROLE_" + user.getRoleType().getRoleTypeName())
         );
 
         return new org.springframework.security.core.userdetails.User(

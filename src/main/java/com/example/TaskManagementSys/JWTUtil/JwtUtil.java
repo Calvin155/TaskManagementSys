@@ -44,7 +44,7 @@ public class JwtUtil {
                 .setClaims(claims)
                 .setSubject(username)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 3))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 120))
                 .signWith(SignatureAlgorithm.HS256, secret)
                 .compact();
     }
@@ -52,7 +52,7 @@ public class JwtUtil {
     public String generateRefreshToken(String username) {
         return Jwts.builder().setSubject(username)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 3)) // 3-minute expiration
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 120))
                 .signWith(SignatureAlgorithm.HS256, secret).compact();
     }
 

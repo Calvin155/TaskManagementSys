@@ -33,7 +33,10 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**" , "/swagger-ui.html", "/webjars/**" ).permitAll()
                         .requestMatchers("/generate-qr/**").permitAll()
-                        .requestMatchers("/authenticate/*", "/tasks/*").permitAll()
+                        .requestMatchers("/authenticate/*").permitAll()
+                        .requestMatchers("/tasks/*").hasRole("USER")
+                        .requestMatchers("/tasks/*").hasRole("ADMIN")
+                        .requestMatchers("/users/system-users").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(sessionManagement -> sessionManagement

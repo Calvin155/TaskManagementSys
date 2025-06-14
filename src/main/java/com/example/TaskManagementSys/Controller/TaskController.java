@@ -33,6 +33,7 @@ public class TaskController {
     public ResponseEntity<List<TaskDTO>> getUserTasks(@RequestHeader("Authorization") String jwtToken){
         try {
             User user = getUser(jwtToken);
+            System.out.println(user.getRoleType().getRoleTypeName());
             if (user == null) {
                 return ResponseEntity.badRequest().build();
             }
