@@ -45,55 +45,65 @@ public class authentication {
 
     @PostMapping("/login")
     public ResponseEntity<?> login (@RequestBody LoginRequest loginRequest){
-        User user = userService.getUser(loginRequest.getUsername(), loginRequest.getPassword());
-        Integer otp = loginRequest.getOtp();
+        try {
+            User user = userService.getUser(loginRequest.getUsername(), loginRequest.getPassword());
+            Integer otp = loginRequest.getOtp();
 
-        if (otp == null) {
-            return ResponseEntity.badRequest().body("OTP is required.");
-        }
+            if (otp == null) {
+                return ResponseEntity.badRequest().body("OTP is required.");
+            }
 
-        if (!googleAuthenticator.authorize(user.getSecretKey(), otp)) {
-            return ResponseEntity.status(401).body("Invalid OTP");
-        }
-        if (user != null) {
-            String role = user.getRoleType().getRoleTypeName();
-            tokenBlacklistService.blacklistPreviousTokens(loginRequest.getUsername());
-            final String jwt = jwtUtil.generateToken(user.getUserName(), role);
+            if (!googleAuthenticator.authorize(user.getSecretKey(), otp)) {
+                return ResponseEntity.status(401).body("Invalid OTP");
+            }
+            if (user != null) {
+                String role = user.getRoleType().getRoleTypeName();
+                tokenBlacklistService.blacklistPreviousTokens(loginRequest.getUsername());
+                final String jwt = jwtUtil.generateToken(user.getUserName(), role);
 
-            //store the newly issued token
-            tokenBlacklistService.storeToken(loginRequest.getUsername(), jwt);
-            //generate refresh token & return to client
-            String refreshToken = refreshTokenService.createRefreshToken(loginRequest.getUsername());
+                //store the newly issued token
+                tokenBlacklistService.storeToken(loginRequest.getUsername(), jwt);
+                //generate refresh token & return to client
+                String refreshToken = refreshTokenService.createRefreshToken(loginRequest.getUsername());
 
-            return ResponseEntity.ok(Map.of("JWT Access Token", jwt, "Refresh Token", refreshToken));
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+                return ResponseEntity.ok(Map.of("JWT Access Token", jwt, "Refresh Token", refreshToken));
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            }
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+            return null;
         }
     }
 
     @PostMapping("/sign-up")
     public ResponseEntity<?> signUp(@RequestBody SignUpRequest signUpRequest){
-        if (signUpRequest.getUsername() == null || signUpRequest.getPassword() == null ){
-            return ResponseEntity.badRequest().build();
+        try {
+            if (signUpRequest.getUsername() == null || signUpRequest.getPassword() == null) {
+                return ResponseEntity.badRequest().build();
+            }
+
+            if (!isValidPassword(signUpRequest.getPassword())) {
+                return ResponseEntity.badRequest().body("Invalid password format");
+            }
+
+            if (userService.checkUserNameExists(signUpRequest.getUsername())) {
+                return ResponseEntity.badRequest().body(HttpStatus.BAD_REQUEST + "Username Exists");
+            }
+
+            RoleType roleType = roleTypeService.getRoleTypeByName("USER");
+            User user = new User();
+            user.setUserName(signUpRequest.getUsername());
+            user.setPassword(signUpRequest.getPassword());
+            user.setRoleType(roleType);
+
+            userService.signUpNewUser(user);
+
+            return ResponseEntity.ok("Successfully Signed Up New User");
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+            return null;
         }
-
-        if (!isValidPassword(signUpRequest.getPassword())) {
-            return ResponseEntity.badRequest().body("Invalid password format");
-        }
-
-        if(userService.checkUserNameExists(signUpRequest.getUsername())){
-            return ResponseEntity.badRequest().body(HttpStatus.BAD_REQUEST + "Username Exists");
-        }
-
-        RoleType roleType = roleTypeService.getRoleTypeByName("USER");
-        User user = new User();
-        user.setUserName(signUpRequest.getUsername());
-        user.setPassword(signUpRequest.getPassword());
-        user.setRoleType(roleType);
-
-        userService.signUpNewUser(user);
-
-        return ResponseEntity.ok("Successfully Signed Up New User");
     }
 
 
