@@ -83,12 +83,14 @@ class TaskControllerTest {
     }
 
     @Test
-    void testNewUserTask_ExceptionThrown_ReturnsNull() {
+    void testNewUserTask_ExceptionThrown_ReturnsInternalServerError() {
         String token = "Bearer valid-token";
         Task task = new Task();
         doReturn(mockUser).when(taskController).getUser(token);
         doThrow(new RuntimeException("DB error")).when(taskService).addNewTask(any(Task.class));
         ResponseEntity<?> response = taskController.newUserTask(token, task);
-        assertNull(response);
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+        assertEquals("Internal Server Error", response.getBody());
     }
+
 }
