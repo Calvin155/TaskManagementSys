@@ -16,7 +16,7 @@ public class SwaggerConfig {
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .info(new Info()
-                        .title("Task Manager System")
+                        .title("Task Management System")
                         .version("1.0")
                         .description("API Docs with Swagger"))
                 .addSecurityItem(new SecurityRequirement().addList("Bearer Authentication"))
