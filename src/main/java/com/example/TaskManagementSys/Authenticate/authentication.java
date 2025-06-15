@@ -72,7 +72,7 @@ public class authentication {
             }
         }catch (Exception e){
             System.out.println(e.getMessage());
-            return null;
+            return ResponseEntity.status(500).build();
         }
     }
 
@@ -102,7 +102,7 @@ public class authentication {
             return ResponseEntity.ok("Successfully Signed Up New User");
         }catch (Exception e){
             System.out.println(e.getMessage());
-            return null;
+            return ResponseEntity.status(500).build();
         }
     }
 

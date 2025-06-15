@@ -1,5 +1,6 @@
 package com.example.TaskManagementSys.Service;
 
+import com.example.TaskManagementSys.DTO.NewUser;
 import com.example.TaskManagementSys.DTO.UserDTO;
 import com.example.TaskManagementSys.Entity.Task;
 import com.example.TaskManagementSys.Entity.User;
@@ -23,11 +24,13 @@ import java.util.Optional;
 public class UserService implements UserDetailsService {
 
     private UserRepository userRepository;
+    private RoleTypeService roleTypeService;
     private static final PasswordEncoder psword = new BCryptPasswordEncoder();
     private final GoogleAuthenticator gAuth = new GoogleAuthenticator();
 
-    public UserService(UserRepository userRepository){
+    public UserService(UserRepository userRepository, RoleTypeService roleTypeService){
         this.userRepository = userRepository;
+        this.roleTypeService = roleTypeService;
     }
 
     public List<UserDTO> getAllUsers(){
@@ -85,6 +88,24 @@ public class UserService implements UserDetailsService {
         newUser.setRoleType(user.getRoleType());
         newUser.setTasks(new ArrayList<Task>());
         System.out.println(newUser.getUserName());
+        userRepository.save(newUser);
+    }
+
+    public void save(User user){
+        userRepository.save(user);
+    }
+
+    public void deleteUser(User user){
+        userRepository.delete(user);
+    }
+
+    public void addNewUser(NewUser user){
+        User newUser = new User();
+        newUser.setUserName(user.getUserName());
+        String password = psword.encode(user.getPassWord());
+        newUser.setPassword(password);
+        newUser.setTasks(new ArrayList<Task>());
+        newUser.setRoleType(roleTypeService.getRoleTypeByName(user.getRoleType()));
         userRepository.save(newUser);
     }
 

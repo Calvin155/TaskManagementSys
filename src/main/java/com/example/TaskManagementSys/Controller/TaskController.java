@@ -44,7 +44,7 @@ public class TaskController {
             return ResponseEntity.ok().body(allTasks);
         }catch (Exception e){
             System.out.println(e.getMessage());
-            return null;
+            return ResponseEntity.status(500).build();
         }
     }
 
@@ -73,7 +73,7 @@ public class TaskController {
             return ResponseEntity.ok().body("Successfully Added New Task for user: " + user.getUserName());
         }catch (Exception e){
             System.out.println(e.getMessage());
-            return null;
+            return ResponseEntity.status(500).build();
         }
     }
 
@@ -89,7 +89,7 @@ public class TaskController {
             return ResponseEntity.ok().body("Successfully Update Task");
         }catch (Exception e){
             System.out.println(e.getMessage());
-            return null;
+            return ResponseEntity.status(500).build();
         }
     }
 
@@ -109,7 +109,7 @@ public class TaskController {
             return ResponseEntity.ok().body("Successfully Deleted Task");
         }catch (Exception e){
             System.out.println(e.getMessage());
-            return null;
+            return ResponseEntity.status(500).build();
         }
     }
 
