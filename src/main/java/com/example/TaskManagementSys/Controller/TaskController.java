@@ -71,11 +71,12 @@ public class TaskController {
             taskService.addNewTask(newTask);
 
             return ResponseEntity.ok().body("Successfully Added New Task for user: " + user.getUserName());
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println(e.getMessage());
-            return ResponseEntity.status(500).build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal Server Error");
         }
     }
+
 
     //User for update a task - Put header - JWT token to verify user & task in body with updates
     @PutMapping("/task")
