@@ -30,23 +30,23 @@ public class TaskController {
 
     //Get User tasks using the JWT Token
     @GetMapping("/task")
-    public ResponseEntity<List<TaskDTO>> getUserTasks(@RequestHeader("Authorization") String jwtToken){
+    public ResponseEntity<List<TaskDTO>> getUserTasks(@RequestHeader("Authorization") String jwtToken) {
         try {
             User user = getUser(jwtToken);
-            System.out.println(user.getRoleType().getRoleTypeName());
+
             if (user == null) {
                 return ResponseEntity.badRequest().build();
             }
+
             List<TaskDTO> allTasks = taskService.getUserTasks(user);
-            if (allTasks == null) {
-                return ResponseEntity.ok().body(null);
-            }
-            return ResponseEntity.ok().body(allTasks);
-        }catch (Exception e){
-            System.out.println(e.getMessage());
+            return ResponseEntity.ok(allTasks);
+
+        } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(500).build();
         }
     }
+
 
     //Add new task - JWT token to be passed as this identifies the user & the task is passed in the body
     @PostMapping("/task")
