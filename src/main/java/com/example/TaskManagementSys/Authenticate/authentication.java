@@ -113,6 +113,30 @@ public class authentication {
         return matcher.matches();
     }
 
+    @PostMapping("/refresh-token")
+    public ResponseEntity<?> refreshAccessToken(@RequestBody Map<String, String> request) {
+        try {
+            String refreshToken = request.get("refreshToken");
+            String username = refreshTokenService.getUsernameFromToken(refreshToken);
+            User user = userService.getUserByUserName(username);
+            if (user == null) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+
+            String roleTypes = user.getRoleType().getRoleTypeName();
+
+            if (refreshToken == null || !refreshTokenService.isValidRefreshToken(refreshToken)) {
+                return ResponseEntity.status(401).body("Invalid or expired refresh token");
+            }
+            String newAccessToken = jwtUtil.generateToken(username, roleTypes);
+
+            return ResponseEntity.ok(Map.of("accessToken", newAccessToken));
+        }catch (Exception e) {
+            System.out.println(e.getMessage());
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+    }
+
     @PostMapping("/logout")
     public ResponseEntity<?> logout(@RequestHeader("Authorization") String accessToken, @RequestBody Map<String, String> request) {
         try {
